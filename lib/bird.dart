@@ -5,12 +5,17 @@ class MyBird extends StatelessWidget {
   final birdY;
   final double birdWidth;
   final double birdHeight;
-  MyBird({this.birdY,required this.birdHeight,required this.birdWidth});
+  const MyBird({Key? key, this.birdY,required this.birdHeight,required this.birdWidth}) : super(key: key);
   @override
   Widget build(BuildContext context) {
     return Container(
-      alignment: Alignment(0,birdY),
-      child: Image.asset("lib/images/01.png",width: 50,),
+      alignment: Alignment(0,(2*birdY+birdHeight)/(2-birdHeight)),
+      child: Image.asset(
+        "lib/images/01.png",
+        width:MediaQuery.of(context).size.height*birdWidth/2,
+        height:MediaQuery.of(context).size.height*3/4*birdHeight/2,
+        fit:BoxFit.fill,
+        ),
     );
   }
 }

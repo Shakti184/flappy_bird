@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:flappy_bird/barrier.dart';
 import 'package:flappy_bird/bird.dart';
 import 'package:flutter/material.dart';
 
@@ -16,8 +17,11 @@ class _HomePageState extends State<HomePage> {
   double height=0;
   double time=0;
   double gravity=-4.9;
-  double velocity=2.5;
-
+  double velocity=3.5;
+  double birdWidth=0.1;
+  double birdHeight=0.1;
+  int score=0;
+  int highscore=0;
   bool gameHasStarted=false;
 
   static List<double> barrierX=[2,2+1.5];
@@ -58,6 +62,8 @@ class _HomePageState extends State<HomePage> {
               style: TextStyle(color: Colors.white,),
             ),
             ),
+            content: Text(
+              "Score : "+ score.toString(),style: const TextStyle(color: Colors.white),),
             actions: [
               GestureDetector(
                 onTap: resetGame,
@@ -68,7 +74,7 @@ class _HomePageState extends State<HomePage> {
                   child: const Text(
                     'PLAY AGAIN',
                     style: TextStyle(color: Colors.white),
-                    )
+                    ),
                 ),
               ),
             )
@@ -79,11 +85,15 @@ class _HomePageState extends State<HomePage> {
   }
 
   void resetGame(){
+    if(score>highscore){
+      highscore=score;
+    }
     Navigator.pop(context);
     setState(() {
       birdY=0;
       gameHasStarted=false;
       time=0;
+      score=0;
       initialPos=birdY;
     });
   }
@@ -92,14 +102,24 @@ class _HomePageState extends State<HomePage> {
     setState(() {
       time=0;
       initialPos=birdY;
+      score+=1;
     });
   }
   
   bool birdIsDead(){
     if(birdY<-1||birdY>1){
         return true;
-      }
-      return false;
+    }
+    for(int i=0;i<barrierX.length;i++){
+      if(barrierX[i]<=birdWidth && 
+        barrierX[i]+barrierwidth>=-birdWidth&&
+        (birdY<=-1+barrierHeight[i][0])||
+        birdY+birdHeight>=1-barrierHeight[i][1]){
+          return true;
+        }
+    }
+
+  return false;
   }
 
   @override
@@ -117,9 +137,40 @@ class _HomePageState extends State<HomePage> {
                   children: [
                     MyBird(
                       birdY: birdY, 
-                      birdHeight: birdWidth, 
-                      birdWidth: birdHeight,
+                      birdHeight: birdHeight, 
+                      birdWidth: birdWidth,
                     ),
+
+                    //MyCoverScreen(gameHasStarted:gameHasStarted),
+
+                    MyBarrier(
+                      barrierX: barrierX[0],
+                      barrierWidth: barrierwidth,
+                      barrierHeight: barrierHeight[0][0],
+                      isThisBottomBarrier: false,
+                    ),
+
+                    MyBarrier(
+                      barrierX: barrierX[0],
+                      barrierWidth: barrierwidth,
+                      barrierHeight: barrierHeight[0][1],
+                      isThisBottomBarrier: true,
+                    ),
+
+                    MyBarrier(
+                      barrierX: barrierX[1],
+                      barrierWidth: barrierwidth,
+                      barrierHeight: barrierHeight[1][0],
+                      isThisBottomBarrier: false,
+                    ),
+
+                    MyBarrier(
+                      barrierX: barrierX[1],
+                      barrierWidth: barrierwidth,
+                      barrierHeight: barrierHeight[1][1],
+                      isThisBottomBarrier: true,
+                    ),
+
                     Container(
                       alignment: const Alignment(0,-0.5),
                       child: Text(
@@ -135,9 +186,37 @@ class _HomePageState extends State<HomePage> {
               ),
             ),
           ),
+          Container(
+            height: 15,
+            color: Colors.green,
+          ),
           Expanded(
             child: Container(
               color: Colors.brown,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: const [
+                    Text("Score",style: TextStyle(color: Colors.white,fontSize: 20),),
+                    SizedBox(
+                      height: 20,
+                    ),
+                    Text("0",style: TextStyle(color: Colors.white,fontSize: 40),),
+                  ],
+                ),
+                Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: const [
+                    Text("Best",style: TextStyle(color: Colors.white,fontSize: 20),),
+                    SizedBox(
+                      height: 20,
+                    ),
+                    Text("0",style: TextStyle(color: Colors.white,fontSize: 40),),
+                  ],
+                ),
+              ]),
               ),
             ),
         ]),
