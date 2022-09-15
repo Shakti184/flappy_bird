@@ -6,7 +6,7 @@ A new Flutter project.
 
 This project is a starting point for a Flutter application.
 
-![Home_Page!](pics/start.png)
-![Home_Page!](pics/playing.png)
-![Home_Page!](pics/gameover.png)
-![Home_Page!](pics/restart.png)
+![Home_Page!](lib/images/start.png)
+![Home_Page!](lib/images/playing.png)
+![Home_Page!](lib/images/gameover.png)
+![Home_Page!](lib/images/restart.png)
